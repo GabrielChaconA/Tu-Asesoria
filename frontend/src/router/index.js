@@ -81,10 +81,16 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore()
   
-  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
+  if (authStore.token && !authStore.isAuthenticated) {
+    await authStore.fetchUser()
+  }
+
+  if (to.name === 'auth' && authStore.isAuthenticated) {
+    next({ name: 'home' })
+  } else if (to.meta.requiresAuth && !authStore.isAuthenticated) {
     next({ name: 'auth' })
   } else if (to.meta.role) {
     // Validar el rol específico

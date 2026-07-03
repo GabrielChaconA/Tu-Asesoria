@@ -1,4 +1,14 @@
 <script setup>
+import { onMounted } from 'vue'
+import { useAuthStore } from '@/stores/authStore'
+
+const authStore = useAuthStore()
+
+onMounted(() => {
+  if (authStore.token) {
+    authStore.fetchUser()
+  }
+})
 </script>
 
 <template>

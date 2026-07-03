@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/authStore'
 import Button from '@/components/ui/Button.vue'
 import Input from '@/components/ui/Input.vue'
 import Card from '@/components/ui/Card.vue'
@@ -21,23 +22,52 @@ import TabsContent from '@/components/ui/TabsContent.vue'
 import { BookOpen, Users, Star } from '@lucide/vue'
 
 const router = useRouter()
+const authStore = useAuthStore()
 const isLoading = ref(false)
-const role = ref('')
+const role = ref('student')
+const email = ref('')
+const password = ref('')
+const name = ref('')
+const regEmail = ref('')
+const regPassword = ref('')
+const errorMessage = ref('')
 
-const handleLogin = () => {
+const handleLogin = async () => {
   isLoading.value = true
-  setTimeout(() => {
-    isLoading.value = false
+  errorMessage.value = ''
+  
+  const success = await authStore.login({
+    email: email.value,
+    password: password.value
+  })
+  
+  isLoading.value = false
+  
+  if (success) {
     router.push('/home')
-  }, 1000)
+  } else {
+    errorMessage.value = 'Credenciales inválidas'
+  }
 }
 
-const handleRegister = () => {
+const handleRegister = async () => {
   isLoading.value = true
-  setTimeout(() => {
-    isLoading.value = false
+  errorMessage.value = ''
+  
+  const success = await authStore.register({
+    name: name.value,
+    email: regEmail.value,
+    password: regPassword.value,
+    role: role.value
+  })
+  
+  isLoading.value = false
+  
+  if (success) {
     router.push('/home')
-  }, 1000)
+  } else {
+    errorMessage.value = 'Error al registrar la cuenta. El correo podría estar en uso.'
+  }
 }
 </script>
 
@@ -103,11 +133,14 @@ const handleRegister = () => {
                 <form @submit.prevent="handleLogin" class="space-y-4">
                   <div class="space-y-2">
                     <Label for="email">Email</Label>
-                    <Input id="email" type="email" placeholder="student@university.edu" required />
+                    <Input id="email" v-model="email" type="email" placeholder="student@university.edu" required />
                   </div>
                   <div class="space-y-2">
                     <Label for="password">Password</Label>
-                    <Input id="password" type="password" placeholder="Enter your password" required />
+                    <Input id="password" v-model="password" type="password" placeholder="Enter your password" required />
+                  </div>
+                  <div v-if="errorMessage" class="text-sm text-red-500 font-medium text-center">
+                    {{ errorMessage }}
                   </div>
                   <Button type="submit" class="w-full" :disabled="isLoading">
                     {{ isLoading ? "Signing in..." : "Sign In" }}
@@ -138,15 +171,15 @@ const handleRegister = () => {
                 <form @submit.prevent="handleRegister" class="space-y-4">
                   <div class="space-y-2">
                     <Label for="name">Full Name</Label>
-                    <Input id="name" type="text" placeholder="Juan Pérez" required />
+                    <Input id="name" v-model="name" type="text" placeholder="Juan Pérez" required />
                   </div>
                   <div class="space-y-2">
                     <Label for="reg-email">Email</Label>
-                    <Input id="reg-email" type="email" placeholder="student@university.edu" required />
+                    <Input id="reg-email" v-model="regEmail" type="email" placeholder="student@university.edu" required />
                   </div>
                   <div class="space-y-2">
                     <Label for="reg-password">Password</Label>
-                    <Input id="reg-password" type="password" placeholder="Create a password" required />
+                    <Input id="reg-password" v-model="regPassword" type="password" placeholder="Create a password" required />
                   </div>
                   <div class="space-y-2">
                     <Label>Profile Type</Label>

@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { useAuthStore } from '@/stores/authStore'
 
 // API base URL configuration (can be driven by env vars)
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api'
@@ -22,9 +23,10 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Handle global errors, e.g., 401 Unauthorized
-    if (error.response?.status === 401) {
-      // e.g. logout user
+    if (error.response?.status === 401 && !error.config.url.includes('/login')) {
+      const authStore = useAuthStore()
+      authStore.logout()
+      alert('Tu sesión ha expirado o es inválida. Por favor, inicia sesión nuevamente.')
     }
     return Promise.reject(error)
   }
