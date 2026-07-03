@@ -61,13 +61,13 @@ const navItems = computed(() => {
       </div>
 
       <div class="flex items-center gap-4">
-        <router-link
-          to="/"
-          class="flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-colors bg-white/10 text-white hover:bg-white/20"
+        <button
+          @click="authStore.logout()"
+          class="flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-colors bg-white/10 text-white hover:bg-white/20 cursor-pointer"
         >
           <LogOut class="h-4 w-4" />
           <span class="hidden sm:inline">Logout</span>
-        </router-link>
+        </button>
       </div>
     </div>
 

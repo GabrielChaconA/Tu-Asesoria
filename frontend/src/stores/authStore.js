@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import api from '@/services/api'
+import router from '@/router'
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref(null)
@@ -15,24 +16,24 @@ export const useAuthStore = defineStore('auth', () => {
 
   const login = async (credentials) => {
     try {
-      // Mock API call for now
-      // const response = await api.post('/auth/login', credentials)
+      const response = await api.post('/login', credentials)
       
-      // Simulate successful login (modificado para incluir atributos de rol para pruebas)
-      const mockResponse = { 
-        user: { 
-          id: 1, 
-          name: 'Usuario Prueba', 
-          role: 'USER', 
-          is_tutor: false, 
-          verification_status: 'APPROVED' 
-        }, 
-        token: 'mock-token' 
-      }
-      setAuth(mockResponse.user, mockResponse.token)
+      setAuth(response.data.user, response.data.token)
       return true
     } catch (error) {
       console.error('Login error', error)
+      return false
+    }
+  }
+
+  const register = async (userData) => {
+    try {
+      const response = await api.post('/register', userData)
+      
+      setAuth(response.data.user, response.data.token)
+      return true
+    } catch (error) {
+      console.error('Register error', error)
       return false
     }
   }
@@ -42,6 +43,21 @@ export const useAuthStore = defineStore('auth', () => {
     isAuthenticated.value = false
     token.value = null
     localStorage.removeItem('token')
+    router.push({ name: 'auth' })
+  }
+
+  const fetchUser = async () => {
+    if (!token.value) return false
+    try {
+      const response = await api.get('/me')
+      user.value = response.data
+      isAuthenticated.value = true
+      return true
+    } catch (error) {
+      console.error('Error fetching user', error)
+      logout()
+      return false
+    }
   }
 
   const setAuth = (userData, authToken) => {
@@ -59,8 +75,11 @@ export const useAuthStore = defineStore('auth', () => {
     isTutor,
     isAdmin,
     isApprovedTutor,
+    isApprovedTutor,
     login,
+    register,
     logout,
+    fetchUser,
     setAuth
   }
 })

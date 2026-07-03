@@ -15,20 +15,23 @@ Route::get('/professors', [TutorController::class, 'getProfessors']);
 Route::get('/tutors-all', [TutorController::class, 'getAll']);
 Route::get('/users/{id}/profile', [TutorController::class, 'getProfile']);
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+Route::post('/login', [\App\Http\Controllers\AuthController::class, 'login']);
+Route::post('/register', [\App\Http\Controllers\AuthController::class, 'register']);
+
+Route::middleware('auth:api')->group(function () {
+    Route::get('/me', [\App\Http\Controllers\AuthController::class, 'me']);
+});
 
 // Ejemplos de rutas protegidas por rol (middleware CheckRole)
 
-Route::middleware(['auth:sanctum', 'role:ADMIN'])->group(function () {
+Route::middleware(['auth:api', 'role:ADMIN'])->group(function () {
     // Solo ADMIN puede validar tutores.
     Route::post('/admin/validate-tutor', function () {
         return response()->json(['message' => 'Tutor validado exitosamente']);
     });
 });
 
-Route::middleware(['auth:sanctum', 'role:TUTOR'])->group(function () {
+Route::middleware(['auth:api', 'role:TUTOR'])->group(function () {
     
     // Rutas que requieren que el tutor esté aprobado (Sprint 2)
     Route::middleware(['tutor.approved'])->group(function () {
@@ -54,7 +57,7 @@ Route::get('/search/tutors', function () {
     return response()->json($tutors);
 });
 
-Route::middleware(['auth:sanctum', 'role:STUDENT'])->group(function () {
+Route::middleware(['auth:api', 'role:STUDENT'])->group(function () {
     // Solo STUDENT puede crear solicitudes de asesoría.
     Route::post('/student/request-advisory', function () {
         return response()->json(['message' => 'Solicitud de asesoría creada']);
@@ -62,7 +65,7 @@ Route::middleware(['auth:sanctum', 'role:STUDENT'])->group(function () {
 });
 
 // Ejemplo: Ruta con múltiples roles permitidos
-Route::middleware(['auth:sanctum', 'role:ADMIN,TUTOR'])->group(function () {
+Route::middleware(['auth:api', 'role:ADMIN,TUTOR'])->group(function () {
     Route::get('/shared-data', function () {
         return response()->json(['message' => 'Acceso permitido para ADMIN y TUTOR']);
     });
