@@ -6,8 +6,6 @@
   
   **Conectando el Conocimiento Universitario.**
 
-  *Desarrollado por **DevStarLabs***
-
   <p align="center">
     <a href="#la-problemática">La Problemática</a> •
     <a href="#nuestra-solución">Nuestra Solución</a> •
@@ -79,11 +77,10 @@ Para garantizar una experiencia veloz e ininterrumpida, implementamos sistemas d
 | :--- | :--- | :--- |
 | **Gabriel Chacón Arellano** | Scrum Master y Desarrollador Full Stack | Responsable de la gestión del proyecto bajo la metodología Scrum, el diseño y modelado de la base de datos, así como del desarrollo del backend y frontend. |
 | **Israel Ramírez Morales** | Desarrollador Full Stack | Colaboró en el diseño de la base de datos y en el desarrollo del backend y frontend de la aplicación. |
-| **Néstor André García Magdaleno** | Desarrollador Full Stack | Participó en el desarrollo del backend y frontend, así como en la implementación e integración de funcionalidades. |
+
 
 ---
 
 <div align="center">
   <i>Diseñando el futuro del aprendizaje colaborativo.</i><br>
-  <b>© 2026 DevStarLabs</b>
 </div>
