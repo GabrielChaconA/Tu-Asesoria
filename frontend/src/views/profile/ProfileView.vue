@@ -1,6 +1,8 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/authStore'
+import EditProfileModal from '@/components/profile/EditProfileModal.vue'
 import Button from '@/components/ui/Button.vue'
 import Card from '@/components/ui/Card.vue'
 import CardHeader from '@/components/ui/CardHeader.vue'
@@ -21,15 +23,33 @@ import {
 
 const router = useRouter()
 
-const userProfile = {
-  id: 1, name: "Dr. María González", email: "maria.gonzalez@unam.edu.mx", role: "Teacher",
-  subject: "Mathematics", specialty: "Calculus", university: "UNAM", location: "Mexico City, Mexico",
-  rating: 4.9, reviews: 156, students: 89, sessions: 342, joinedDate: "January 2023",
-  image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop&crop=face",
-  bio: "Professor with 10+ years of experience teaching calculus at university level. Passionate about making complex mathematical concepts accessible to all students. I specialize in differential and integral calculus, and have helped hundreds of students achieve their academic goals.",
-  subjects: ["Differential Calculus", "Integral Calculus", "Vector Calculus", "Linear Algebra"],
-  languages: ["Spanish", "English"], hourlyRate: 300, availability: "Mon-Fri, 9AM-6PM",
-}
+const authStore = useAuthStore()
+
+// Mapear los datos del usuario autenticado
+const userProfile = computed(() => {
+  const user = authStore.user
+  if (!user) return {}
+  
+  return {
+    id: user.id,
+    name: `${user.name} ${user.lastname || ''}`.trim(),
+    email: user.email,
+    role: user.role === 'USER' && user.is_tutor ? 'Tutor' : user.role === 'USER' ? 'Student' : 'Admin',
+    subject: "N/A", // Por implementar
+    specialty: "N/A", // Por implementar
+    university: user.university?.name || "Sin universidad asociada",
+    location: "México", // Mock
+    rating: 0, reviews: 0, students: 0, sessions: 0, // Mocks por ahora
+    joinedDate: new Date(user.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
+    image: user.profileImageUrl || "https://ui-avatars.com/api/?name=" + encodeURIComponent(user.name) + "&background=random",
+    bio: user.bio || "Aún no has escrito una biografía.",
+    subjects: [], // Por implementar
+    languages: ["Spanish"], // Mock
+    hourlyRate: 0, availability: "N/A",
+  }
+})
+
+const isEditModalOpen = ref(false)
 
 const achievements = [
   { id: 1, title: "PhD in Applied Mathematics", institution: "UNAM", year: "2015", type: "degree" },
@@ -85,7 +105,7 @@ const isOwnProfile = ref(true)
 
                 <div class="flex gap-2">
                   <template v-if="isOwnProfile">
-                    <Button variant="outline">
+                    <Button variant="outline" @click="isEditModalOpen = true">
                       <Edit class="mr-2 h-4 w-4" />
                       Edit Profile
                     </Button>
@@ -304,6 +324,13 @@ const isOwnProfile = ref(true)
           </div>
         </TabsContent>
       </Tabs>
+
+      <!-- Edit Profile Modal -->
+      <EditProfileModal 
+        :is-open="isEditModalOpen" 
+        :user="authStore.user" 
+        @close="isEditModalOpen = false" 
+      />
     </div>
   </div>
 </template>

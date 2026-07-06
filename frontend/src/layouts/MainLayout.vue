@@ -6,11 +6,11 @@ import Footer from '@/components/layout/Footer.vue'
 <template>
   <div class="min-h-screen bg-background flex flex-col">
     <Navbar />
-    <main class="flex-1 pb-16 md:pb-0">
+    <main class="flex-1 pb-16 md:pb-0 flex flex-col">
       <router-view v-slot="{ Component }">
-        <Transition name="fade" mode="out-in">
+        <transition name="fade" mode="out-in">
           <component :is="Component" />
-        </Transition>
+        </transition>
       </router-view>
     </main>
     <Footer />

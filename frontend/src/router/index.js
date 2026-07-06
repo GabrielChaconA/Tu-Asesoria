@@ -3,6 +3,7 @@ import { useAuthStore } from '@/stores/authStore'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 
+// Configuración opcional de NProgress
 NProgress.configure({ showSpinner: false })
 
 const routes = [
