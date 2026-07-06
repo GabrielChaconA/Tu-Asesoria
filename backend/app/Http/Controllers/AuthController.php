@@ -7,6 +7,32 @@ use Illuminate\Http\Request;
 class AuthController extends Controller
 {
     /**
+     * Format the user response to include profile details.
+     */
+    private function formatUserResponse($user)
+    {
+        $primaryUniversity = $user->universities()->wherePivot('is_primary', true)->first();
+
+        return [
+            'id' => $user->id,
+            'name' => $user->name,
+            'lastname' => $user->lastname,
+            'email' => $user->email,
+            'role' => $user->role,
+            'verification_status' => $user->verification_status ?? 'PENDING',
+            'is_tutor' => $user->is_tutor ?? false,
+            'university' => $primaryUniversity ? [
+                'id' => $primaryUniversity->id,
+                'name' => $primaryUniversity->name,
+            ] : null,
+            'relationshipType' => $primaryUniversity ? $primaryUniversity->pivot->relationship_type : null,
+            'profileImageUrl' => $user->profile_image_url, // URL directo de Cloudinary
+            'bio' => $user->bio,
+            'createdAt' => $user->created_at,
+        ];
+    }
+
+    /**
      * Recupera la información del usuario autenticado (JWT).
      *
      * @return \Illuminate\Http\JsonResponse
@@ -14,15 +40,7 @@ class AuthController extends Controller
     public function me()
     {
         $user = auth()->user();
-        
-        return response()->json([
-            'id' => $user->id,
-            'name' => $user->name,
-            'email' => $user->email,
-            'role' => $user->role,
-            'is_tutor' => $user->is_tutor ?? false,
-            'verification_status' => $user->verification_status ?? 'PENDING'
-        ]);
+        return response()->json($this->formatUserResponse($user));
     }
 
     /**
@@ -43,14 +61,7 @@ class AuthController extends Controller
 
         return response()->json([
             'token' => $token,
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'role' => $user->role,
-                'is_tutor' => $user->is_tutor ?? false,
-                'verification_status' => $user->verification_status ?? 'PENDING'
-            ]
+            'user' => $this->formatUserResponse($user)
         ]);
     }
 
@@ -86,14 +97,7 @@ class AuthController extends Controller
 
         return response()->json([
             'token' => $token,
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'role' => $user->role,
-                'is_tutor' => $user->is_tutor ?? false,
-                'verification_status' => $user->verification_status ?? 'PENDING'
-            ]
+            'user' => $this->formatUserResponse($user)
         ], 201);
     }
 }

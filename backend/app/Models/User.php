@@ -13,7 +13,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 
-#[Fillable(['name', 'lastname', 'email', 'password', 'role', 'is_tutor'])]
+#[Fillable(['name', 'lastname', 'email', 'password', 'role', 'is_tutor', 'bio', 'profile_image_url'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements JWTSubject
 {
@@ -68,5 +68,14 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->belongsToMany(Subject::class, 'user_subjects', 'user_id', 'subject_id')
                     ->withPivot('relationship_type');
+    }
+
+    /**
+     * Get the universities associated with this user.
+     */
+    public function universities()
+    {
+        return $this->belongsToMany(University::class, 'user_universities', 'user_id', 'university_id')
+                    ->withPivot(['is_primary', 'relationship_type']);
     }
 }

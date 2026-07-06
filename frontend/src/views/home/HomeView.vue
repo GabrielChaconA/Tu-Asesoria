@@ -268,27 +268,7 @@ const selectedUniversity = ref("")
       </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="bg-accent px-4 py-8 text-accent-foreground">
-      <div class="mx-auto max-w-7xl">
-        <div class="flex flex-col items-center justify-between gap-4 sm:flex-row">
-          <p class="text-sm text-accent-foreground/70">
-            2026 TÚ ASESORÍA. All rights reserved.
-          </p>
-          <div class="flex gap-6">
-            <a href="#" class="text-sm text-accent-foreground/70 hover:text-accent-foreground">
-              Política de Privacidad
-            </a>
-            <a href="#" class="text-sm text-accent-foreground/70 hover:text-accent-foreground">
-              Términos de Servicio
-            </a>
-            <a href="#" class="text-sm text-accent-foreground/70 hover:text-accent-foreground">
-              Contacto
-            </a>
-          </div>
-        </div>
-      </div>
-    </footer>
+
 
     <!-- Modal de Tutores -->
     <div v-if="isModalOpen" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">

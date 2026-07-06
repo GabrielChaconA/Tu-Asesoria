@@ -20,6 +20,7 @@ Route::post('/register', [\App\Http\Controllers\AuthController::class, 'register
 
 Route::middleware('auth:api')->group(function () {
     Route::get('/me', [\App\Http\Controllers\AuthController::class, 'me']);
+    Route::put('/profile', [\App\Http\Controllers\ProfileController::class, 'update']);
 });
 
 // Ejemplos de rutas protegidas por rol (middleware CheckRole)
